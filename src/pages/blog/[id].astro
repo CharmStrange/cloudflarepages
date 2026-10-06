@@ -3,15 +3,33 @@ import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+  // 최신 글이 앞에 오도록 정렬
+  const posts = (await getCollection('blog')).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+  );
+  return posts.map((post, i) => ({
+    params: { id: post.id },
+    // 앞 칸이 더 최신 글(다음 글), 뒤 칸이 더 오래된 글(이전 글)
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
 ---
 <Base title={post.data.title}>
   <h1>{post.data.title}</h1>
   <time>{post.data.date.toISOString().slice(0, 10)}</time>
   <Content />
+
+  <nav class="post-nav">
+    {older ? <a href={`/blog/${older.id}/`}>← 이전 글<br />{older.data.title}</a> : <span></span>}
+    {newer ? <a href={`/blog/${newer.id}/`}>다음 글 →<br />{newer.data.title}</a> : <span></span>}
+  </nav>
 </Base>
+
+<style>
+  .post-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; }
+  .post-nav a { max-width: 48%; text-decoration: none; }
+  .post-nav a:last-child { text-align: right; }
+</style>

@@ -1,0 +1,7 @@
+{
+  // Must match the Worker name shown in the Cloudflare dashboard.
+  "name": "cloudflarepages",
+  "compatibility_date": "2026-10-01",
+  // Static site only: upload the built folder, no server code.
+  "assets": { "directory": "./dist" }
+}

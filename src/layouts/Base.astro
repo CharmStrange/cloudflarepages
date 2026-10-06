@@ -35,10 +35,16 @@ const { title = '내 사이트' } = Astro.props;
       body { margin: 0; font-family: system-ui, sans-serif; line-height: 1.7; color: #111; background: #fff; }
       a { color: inherit; }
       /* 3 : 6 split. The sidebar stays at one third of the width on every screen size. */
-      .page { display: grid; grid-template-columns: 3fr 6fr; min-height: 100vh; }
+      .page { display: grid; grid-template-columns: 14rem minmax(0, 1fr); min-height: 100vh; max-width: 64rem; margin: 0 auto; }
       aside { padding: 1.5rem 1rem; border-right: 1px solid #ddd; position: sticky; top: 0; align-self: start; height: 100vh; box-sizing: border-box; overflow-y: auto; }
       aside nav { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
       main { padding: 1.5rem; min-width: 0; }
+
+      @media (max-width: 700px) {
+        .page { grid-template-columns: 1fr; }
+        aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid #ddd; }
+      }
+
       main img { max-width: 100%; height: auto; }
       ul.list { list-style: none; padding: 0; }
       ul.list li { margin: 0 0 0.75rem; }

@@ -1,0 +1,50 @@
+---
+const { title = '내 사이트' } = Astro.props;
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="page">
+      <aside>
+        <p><a href="/"><strong>내 사이트</strong></a></p>
+        <nav>
+          <a href="/blog/">블로그</a>
+          <a href="/portfolio/">포트폴리오</a>
+        </nav>
+        <div id="search"></div>
+      </aside>
+      <!-- Only <main> is indexed for search, so the sidebar never shows up in results. -->
+      <main data-pagefind-body>
+        <slot />
+      </main>
+    </div>
+
+    <!-- The search files only exist after `npm run build`, so in `npm run dev` the box stays empty. -->
+    <script is:inline src="/pagefind/pagefind-ui.js"></script>
+    <script is:inline>
+      if (window.PagefindUI) new PagefindUI({ element: '#search', showImages: false });
+    </script>
+
+    <style is:global>
+      body { margin: 0; font-family: system-ui, sans-serif; line-height: 1.7; color: #111; background: #fff; }
+      a { color: inherit; }
+      /* 3 : 6 split. The sidebar stays at one third of the width on every screen size. */
+      .page { display: grid; grid-template-columns: 3fr 6fr; min-height: 100vh; }
+      aside { padding: 1.5rem 1rem; border-right: 1px solid #ddd; position: sticky; top: 0; align-self: start; height: 100vh; box-sizing: border-box; overflow-y: auto; }
+      aside nav { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+      main { padding: 1.5rem; min-width: 0; }
+      main img { max-width: 100%; height: auto; }
+      ul.list { list-style: none; padding: 0; }
+      ul.list li { margin: 0 0 0.75rem; }
+      time { color: #666; font-size: 0.9em; margin-right: 0.5rem; }
+      /* Pagefind's search UI reads these variables. */
+      #search { --pagefind-ui-scale: 0.8; --pagefind-ui-border-radius: 0; }
+    </style>
+  </body>
+</html>

@@ -50,5 +50,6 @@ https://www.reddit.com/r/PERSoNA/comments/70vm9n/just_finished_persona_4_for_the
 사실 이거 들려주려고 쓸데없이 서론 주구장창 늘어놨다.
 
 <audio controls preload="none" src="./images/p4post01/TheGenesis.mp3"></audio>
+
 최종 보스전에서 흘러나오는 이 웅장한 Reach Out To The Truth 의 오케스트라 버전...
 

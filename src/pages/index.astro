@@ -4,10 +4,37 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort(
   (a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+// 정렬 방향과 상관없이 가장 최신 글을 찾음 (글이 하나도 없으면 undefined)
+const latest = posts.length
+  ? posts.reduce((a, b) => (a.data.date > b.data.date ? a : b))
+  : undefined;
+
+// 본문 앞 100자 미리보기 (이미지, 링크, 태그, 마크다운 기호 제거)
+const preview = (latest?.body ?? '')
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+  .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+  .replace(/<[^>]+>/g, '')
+  .replace(/[#>*_`]/g, '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 100);
 ---
 <Base>
   <h1>안녕하세요!</h1>
   <p>블로그용 개인 홈페이지입니다.</p>
+
+  {latest && (
+    <section class="latest">
+      <h2>최신 글</h2>
+      <a href={`/blog/${latest.id}/`}>
+        <time>{latest.data.date.toISOString().slice(0, 10)}</time>
+        <strong>{latest.data.title}</strong>
+        <p>{preview}…</p>
+      </a>
+    </section>
+  )}
+
   <h2>최근 글</h2>
   <ul class="list" id="post-list">
     {posts.map((p) => (
@@ -23,34 +50,13 @@ const posts = (await getCollection('blog')).sort(
 </Base>
 
 <style>
+  .latest { border: 1px solid #ddd; border-radius: 8px; padding: 1rem 1.2rem; margin: 1.5rem 0; }
+  .latest h2 { margin: 0 0 0.5rem; font-size: 1em; }
+  .latest a { display: block; text-decoration: none; color: inherit; }
+  .latest strong { display: block; font-size: 1.1em; text-decoration: underline; }
+  .latest p { margin: 0.4rem 0 0; color: #555; }
+
   .pager { display: none; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
   .pager button { padding: 0.4rem 0.8rem; cursor: pointer; }
   .pager button:disabled { opacity: 0.35; cursor: default; }
-</style>
-
-<script>
-  const SIZE = 5; // 한 번에 보여줄 글 수
-  const items = Array.from(document.querySelectorAll<HTMLElement>('#post-list li'));
-  const pager = document.getElementById('pager') as HTMLElement;
-  const prev = document.getElementById('prev') as HTMLButtonElement;
-  const next = document.getElementById('next') as HTMLButtonElement;
-  const info = document.getElementById('page-info') as HTMLElement;
-
-  const last = Math.max(0, Math.ceil(items.length / SIZE) - 1);
-  let page = 0;
-
-  function show() {
-    items.forEach((li, i) => {
-      li.style.display = Math.floor(i / SIZE) === page ? '' : 'none';
-    });
-    prev.disabled = page === 0;
-    next.disabled = page === last;
-    info.textContent = `${page + 1} / ${last + 1}`;
-  }
-
-  prev.addEventListener('click', () => { page--; show(); });
-  next.addEventListener('click', () => { page++; show(); });
-
-  if (items.length > SIZE) pager.style.display = 'flex';
-  show();
-</script>
+</s

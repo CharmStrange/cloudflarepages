@@ -26,7 +26,7 @@ const preview = (latest?.body ?? '')
 
   {latest && (
     <section class="latest">
-      <h2>글 목록(날짜 순)</h2>
+      <h2>최신 글 미리보기</h2>
       <a href={`/blog/${latest.id}/`}>
         <time>{latest.data.date.toISOString().slice(0, 10)}</time>
         <strong>{latest.data.title}</strong>
@@ -35,7 +35,7 @@ const preview = (latest?.body ?? '')
     </section>
   )}
 
-  <h2>최근 글</h2>
+  <h2>글 목록(날짜 순)</h2>
   <ul class="list" id="post-list">
     {posts.map((p) => (
       <li><time>{p.data.date.toISOString().slice(0, 10)}</time><a href={`/blog/${p.id}/`}>{p.data.title}</a></li>

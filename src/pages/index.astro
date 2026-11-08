@@ -59,4 +59,31 @@ const preview = (latest?.body ?? '')
   .pager { display: none; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
   .pager button { padding: 0.4rem 0.8rem; cursor: pointer; }
   .pager button:disabled { opacity: 0.35; cursor: default; }
-</s
+</style>
+
+<script>
+  const SIZE = 5; // 한 번에 보여줄 글 수
+  const items = Array.from(document.querySelectorAll<HTMLElement>('#post-list li'));
+  const pager = document.getElementById('pager') as HTMLElement;
+  const prev = document.getElementById('prev') as HTMLButtonElement;
+  const next = document.getElementById('next') as HTMLButtonElement;
+  const info = document.getElementById('page-info') as HTMLElement;
+
+  const last = Math.max(0, Math.ceil(items.length / SIZE) - 1);
+  let page = 0;
+
+  function show() {
+    items.forEach((li, i) => {
+      li.style.display = Math.floor(i / SIZE) === page ? '' : 'none';
+    });
+    prev.disabled = page === 0;
+    next.disabled = page === last;
+    info.textContent = `${page + 1} / ${last + 1}`;
+  }
+
+  prev.addEventListener('click', () => { page--; show(); });
+  next.addEventListener('click', () => { page++; show(); });
+
+  if (items.length > SIZE) pager.style.display = 'flex';
+  show();
+</script>
